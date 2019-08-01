@@ -19,11 +19,10 @@ package com.tencent.angel.spark.automl
 
 import java.io.File
 
-import com.tencent.angel.spark.automl.feature.cross.FeatureCrossMeta
 import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.feature.operator.{MetadataTransformUtils, VarianceSelector, VectorCartesian, VectorFilterZero}
+import org.apache.spark.ml.feature.operator._
 import org.apache.spark.sql.SparkSession
 import org.junit.Test
 
@@ -36,7 +35,7 @@ class FeatureEngineeringTest {
   @Test def testIterativeCross(): Unit = {
 
     val dim = 123
-    val incDim = 20
+    val incDim = 10
     val iter = 2
     val modelPath = "tmp/model/feature_engineer"
 
@@ -66,8 +65,9 @@ class FeatureEngineeringTest {
       curField += cartesianPrefix
 
       // add selector operator
-      val selector = new VarianceSelector()
+      val selector = new RandomForestSelector()
         .setFeaturesCol(curField)
+        .setLabelCol("label")
         .setOutputCol(curField + selectorPrefix)
         .setNumTopFeatures(incDim)
       println(s"Selector -> input $curField, output ${curField + selectorPrefix}")
@@ -118,20 +118,20 @@ class FeatureEngineeringTest {
     val originalLR = new LogisticRegression()
       .setFeaturesCol("features")
       .setLabelCol("label")
-      .setMaxIter(20)
+      .setMaxIter(100)
       .setRegParam(0.01)
     val originalAUC = originalLR.fit(trainDF).evaluate(testDF)
       .asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
-    println(s"original features auc: $originalAUC")
+    println(s"original features auc = $originalAUC")
 
     val crossLR = new LogisticRegression()
       .setFeaturesCol("assembled_features")
       .setLabelCol("label")
-      .setMaxIter(20)
+      .setMaxIter(100)
       .setRegParam(0.01)
     val crossAUC = crossLR.fit(trainDF).evaluate(testDF)
       .asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
-    println(s"cross features auc: $crossAUC")
+    println(s"cross features auc = $crossAUC")
   }
 
   def deleteRecursively(file: File): Unit = {

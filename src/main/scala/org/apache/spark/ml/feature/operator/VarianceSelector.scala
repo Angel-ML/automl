@@ -116,9 +116,6 @@ class VarianceSelector(override val uid: String)
     val sortedIndices: Array[Int] = argsort.argsortDenseVector_Double(BDV(variance))
       .toArray.reverse
 
-    println("number of selected features in fitting = " + $(numTopFeatures))
-    println("selected features in fitting = " + sortedIndices.take($(numTopFeatures)).mkString(","))
-
     new VarianceSelectorModel(uid, sortedIndices)
       .setFeaturesCol($(featuresCol))
       .setOutputCol($(outputCol))
