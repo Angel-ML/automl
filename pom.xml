@@ -5,13 +5,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tencent.angel</groupId>
-  <artifactId>angel-automl</artifactId>
+  <artifactId>automl</artifactId>
   <packaging>jar</packaging>
   <version>0.1.0</version>
 
   <name>Angel AutoML POM</name>
   <description>The maven main core project description</description>
-  <url>https://github.com/Angel-ML/AutoML</url>
+  <url>https://github.com/Angel-ML/automl</url>
 
   <licenses>
     <license>
