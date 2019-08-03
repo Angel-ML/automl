@@ -24,15 +24,24 @@ import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, Logi
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.feature.operator._
 import org.apache.spark.sql.SparkSession
-import org.junit.Test
+import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
 
 import scala.collection.mutable.ArrayBuffer
 
-class FeatureEngineeringTest {
+class FeatureEngineeringTest extends FunSuite with BeforeAndAfter {
 
-  val spark = SparkSession.builder().master("local").getOrCreate()
+  var spark: SparkSession = _
 
-  @Test def testIterativeCross(): Unit = {
+  before {
+    spark = SparkSession.builder().master("local").getOrCreate()
+  }
+
+  after {
+    spark.close()
+  }
+
+ test("test_iterative_cross") {
 
     val dim = 123
     val incDim = 10

@@ -21,14 +21,22 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.feature.operator.{MetadataTransformUtils, VectorCartesian}
 import org.apache.spark.sql.SparkSession
-import org.junit.Test
+import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
 
-class MetadataTest {
+class MetadataTest extends FunSuite with BeforeAndAfter {
 
-  val spark = SparkSession.builder().master("local").getOrCreate()
+  var spark: SparkSession = _
 
-  @Test
-  def testVectorCartesian(): Unit = {
+  before {
+    spark = SparkSession.builder().master("local").getOrCreate()
+  }
+
+  after {
+    spark.close()
+  }
+
+  test("test_vector_cartesian") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -52,13 +60,9 @@ class MetadataTest {
       println("name: " + field.name)
       println("metadata: " + field.metadata.toString())
     }
-
-    spark.close()
-
   }
 
-  @Test
-  def testThreeOrderCartesian(): Unit = {
+  test("test_three_order_cartesian") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", 8)
       .load("data/abalone/abalone_8d_train.libsvm")
@@ -86,8 +90,5 @@ class MetadataTest {
     // second cartesian, the number of dimensions is 512
     println("second cartesian dimension = " + crossDF.select("f_f_f").schema.fields.last.metadata.getStringArray(MetadataTransformUtils.DERIVATION).length)
     println(crossDF.select("f_f_f").schema.fields.last.metadata.getStringArray(MetadataTransformUtils.DERIVATION).mkString(","))
-
-    spark.close()
   }
-
 }

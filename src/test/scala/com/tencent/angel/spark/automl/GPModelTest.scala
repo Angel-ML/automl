@@ -4,11 +4,11 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.numerics.{cos, pow}
 import com.tencent.angel.spark.automl.tuner.kernel.Matern5Iso
 import com.tencent.angel.spark.automl.tuner.model.GPModel
-import org.junit._
+import org.scalatest.FunSuite
 
-class GPModelTest {
+class GPModelTest extends FunSuite {
 
-  @Test def testLinear(): Unit = {
+  test("test_linear") {
     // Test linear: y=2*x
     val X = DenseMatrix((1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0)).t
     val y = 2.0 * DenseVector(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0)
@@ -35,7 +35,7 @@ class GPModelTest {
     println(truePredZ)
   }
 
-  @Test def testCosine(): Unit = {
+  test("test_cosine") {
     // Test no_linear: y=cos(x)+1
     val X = DenseMatrix((1.0,2.0, 3.0,4.0,5.0,6.0,7.0,8.0,9.0)).t
     val y = cos(DenseVector(1.0,2.0, 3.0,4.0,5.0,6.0,7.0,8.0,9.0))+1.0
@@ -62,7 +62,7 @@ class GPModelTest {
     println(truePredZ)
   }
 
-  @Test def testSquare(): Unit = {
+  test("testSquare") {
     // Test no_linear: y=x^2
     val X = DenseMatrix((1.0,2.0, 3.0,4.0,5.0,6.0,7.0,8.0,9.0)).t
     val y = DenseVector(1.0,4.0, 9.0,16.0,25.0,36.0,49.0,64.0,81.0)

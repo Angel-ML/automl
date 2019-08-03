@@ -21,18 +21,27 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NumericAttribute}
 import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.feature.{Interaction, VectorAssembler}
-import org.apache.spark.ml.feature.operator.{SelfCartesian, VarianceSelector, VectorCartesian}
-import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vectors}
+import org.apache.spark.ml.feature.operator.{SelfCartesian, VectorCartesian}
+import org.apache.spark.ml.linalg.{DenseVector, Vectors}
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.ml.linalg.SQLDataTypes.VectorType
-import org.junit.Test
+import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
 
-class FeatureCrossTest {
+class FeatureCrossTest extends FunSuite with BeforeAndAfter {
 
-  val spark = SparkSession.builder().master("local").getOrCreate()
+  var spark: SparkSession = _
 
-  @Test def testInteraction(): Unit = {
+  before {
+     spark = SparkSession.builder().master("local").getOrCreate()
+  }
+
+  after {
+    spark.close()
+  }
+
+  test("test_interaction") {
     val data = Seq(
       Row(Vectors.dense(Array(1.0,2.0,3.0)), Vectors.dense(Array(2.0,3.0,4.0)), Vectors.dense(Array(3.0,4.0,5.0)))
     )
@@ -63,7 +72,7 @@ class FeatureCrossTest {
     interacted.show(truncate = false)
   }
 
-  @Test def testVectorCartesian(): Unit = {
+  test("test_vector_cartesian") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -113,12 +122,9 @@ class FeatureCrossTest {
       .setRegParam(0.01)
     val assemblerAUC = assemblerLR.fit(trainDF).evaluate(testDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"original feature + cartesian feature: auc = $assemblerAUC")
-
-    spark.close()
-
   }
 
-  @Test def testSelfCartesian(): Unit = {
+  test("test_self_cartesian") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -168,11 +174,9 @@ class FeatureCrossTest {
       .setRegParam(0.01)
     val assemblerAUC = assemblerLR.fit(trainDF).evaluate(testDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"original feature + cartesian feature: auc = $assemblerAUC")
-
-    spark.close()
   }
 
-  @Test def testThreeOrderCross(): Unit = {
+  test("test_three_order_cross") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", 8)
       .load("data/abalone/abalone_8d_train.libsvm")
@@ -205,5 +209,4 @@ class FeatureCrossTest {
     val assembledDim = crossDF.head().getAs[DenseVector]("assembled_features").toArray.size
     println(s"assembled features size: $assembledDim")
   }
-
 }

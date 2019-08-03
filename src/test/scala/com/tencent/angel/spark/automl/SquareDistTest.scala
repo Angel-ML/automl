@@ -21,25 +21,25 @@ package com.tencent.angel.spark.automl
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.tencent.angel.spark.automl.tuner.math.SquareDist
 import org.junit.Assert._
-import org.junit._
+import org.scalatest.FunSuite
 
-class SquareDistTest {
+class SquareDistTest extends FunSuite {
 
-  @Test def testXX1D = {
+  test("test_XX_1D") {
 
     val x = DenseVector(1.0, 2.0, 3.0).toDenseMatrix.t
     val expected = DenseMatrix((0.0, 1.0, 4.0), (1.0, 0.0, 1.0), (4.0, 1.0, 0.0))
     assertEquals(expected, SquareDist(x, x))
   }
 
-  @Test def testXX2D = {
+  test("test_XX_2D")  {
 
     val x = DenseMatrix((1.0, 2.0, 3.0), (4.0, 5.0, 6.0)).t
     val expected = DenseMatrix((0.0, 2.0, 8.0), (2.0, 0.0, 2.0), (8.0, 2.0, 0.0))
     assertEquals(expected, SquareDist(x, x))
   }
 
-  @Test def testXY1D = {
+  test("test_XY_1D") {
 
     val x1 = DenseVector(1.0, 2.0, 3.0).toDenseMatrix.t
     val x2 = DenseVector(4.0, 5.0).toDenseMatrix.t
@@ -48,7 +48,7 @@ class SquareDistTest {
     assertEquals(expected, SquareDist(x1, x2))
   }
 
-  @Test def testXY2D = {
+  test("test_XY_2D") {
 
     val x1 = DenseMatrix((1.0, 2.0, 3.0), (4.0, 5.0, 6.0)).t
     val x2 = DenseMatrix((7.0, 8.0), (9.0, 10.0)).t

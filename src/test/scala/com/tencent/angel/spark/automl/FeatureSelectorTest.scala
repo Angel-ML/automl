@@ -5,16 +5,24 @@ import java.io._
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.feature.operator._
-import org.junit.Test
+import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
 
-class FeatureSelectorTest {
+class FeatureSelectorTest extends FunSuite with BeforeAndAfter {
 
-  val spark = SparkSession.builder().master("local").getOrCreate()
+  var spark: SparkSession = _
+  var numTopFeatures: Int = _
 
-  val numTopFeatures = 10
+  before {
+    spark = SparkSession.builder().master("local").getOrCreate()
+    numTopFeatures = 10
+  }
 
-  @Test def testLasso(): Unit = {
-    System.setOut(new PrintStream(new FileOutputStream("tmp/log/lasso.selector.out")))
+  after {
+    spark.close()
+  }
+
+  test("test_lasso") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -53,13 +61,10 @@ class FeatureSelectorTest {
 
     val selectedAUC = selectedLR.fit(selectedTrainDF).evaluate(selectedTestDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"selected feature: auc = $selectedAUC")
-
-    spark.stop()
+    spark.close()
   }
 
-  @Test
-  def testRandomForest(): Unit = {
-    System.setOut(new PrintStream(new FileOutputStream("tmp/log/rf.selector.out")))
+  test("test_rf") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -98,13 +103,9 @@ class FeatureSelectorTest {
 
     val selectedAUC = selectedLR.fit(selectedTrainDF).evaluate(selectedTestDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"selected feature: auc = $selectedAUC")
-
-    spark.stop()
   }
 
-  @Test
-  def testVariance(): Unit = {
-    System.setOut(new PrintStream(new FileOutputStream("tmp/log/variance.selector.out")))
+  test("test_variance") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .load("data/a9a/a9a_123d_train_trans.libsvm")
@@ -143,13 +144,9 @@ class FeatureSelectorTest {
 
     val selectedAUC = selectedLR.fit(selectedTrainDF).evaluate(selectedTestDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"selected feature: auc = $selectedAUC")
-
-    spark.stop()
   }
 
-  @Test
-  def testFtest(): Unit = {
-    System.setOut(new PrintStream(new FileOutputStream("tmp/log/ftest.selector.out")))
+  test("test_ftest") {
     val data = spark.read.format("libsvm")
       .option("numFeatures", "123")
       .option("vectorType", "dense")
@@ -189,8 +186,6 @@ class FeatureSelectorTest {
 
     val selectedAUC = selectedLR.fit(selectedTrainDF).evaluate(selectedTestDF).asInstanceOf[BinaryLogisticRegressionSummary].areaUnderROC
     println(s"selected feature: auc = $selectedAUC")
-
-    spark.stop()
   }
 
   def deleteRecursively(file: File): Unit = {

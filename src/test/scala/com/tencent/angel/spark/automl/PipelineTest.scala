@@ -20,13 +20,22 @@ package com.tencent.angel.spark.automl
 import com.tencent.angel.spark.automl.feature.preprocess.{HashingTFWrapper, IDFWrapper, TokenizerWrapper}
 import com.tencent.angel.spark.automl.feature.{PipelineBuilder, PipelineWrapper, TransformerWrapper}
 import org.apache.spark.sql.SparkSession
-import org.junit._
+import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
 
-class PipelineTest {
+class PipelineTest extends FunSuite with BeforeAndAfter {
 
-  val spark = SparkSession.builder().master("local").getOrCreate()
+  var spark: SparkSession = _
 
-  @Test def testTfIdf(): Unit = {
+  before {
+    spark = SparkSession.builder().master("local").getOrCreate()
+  }
+
+  after {
+    spark.close()
+  }
+
+  test("test_tfidf") {
     val sentenceData = spark.createDataFrame(Seq(
       (0.0, "Hi I heard about Spark"),
       (0.0, "I wish Java could use case classes"),
@@ -66,13 +75,4 @@ class PipelineTest {
     outputDF.rdd.map(row => row.toString()).repartition(1)
       .saveAsTextFile("tmp/output/tfidf")
   }
-
-  @Test def testWord2Vec(): Unit = {
-
-  }
-
-  @Test def testNumerical(): Unit = {
-
-  }
-
 }
