@@ -20,7 +20,7 @@ package com.tencent.angel.spark.automl.feature.select
 
 import com.tencent.angel.spark.automl.feature.InToOutRelation.{InToOutRelation, OneToOne}
 import com.tencent.angel.spark.automl.feature.TransformerWrapper
-import org.apache.spark.ml.feature.{ChiSqSelector, ChiSqSelectorModel}
+import org.apache.spark.ml.feature.ChiSqSelector
 
 class ChiSqSelectorWrapper extends TransformerWrapper {
   override val transformer = new ChiSqSelector()

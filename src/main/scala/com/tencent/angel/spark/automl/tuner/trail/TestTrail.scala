@@ -18,7 +18,7 @@
 
 package com.tencent.angel.spark.automl.tuner.trail
 
-import com.github.fommil.netlib.{BLAS => NetlibBLAS, F2jBLAS}
+import com.github.fommil.netlib.F2jBLAS
 import com.tencent.angel.spark.automl.tuner.config.Configuration
 
 class TestTrail extends Trail {

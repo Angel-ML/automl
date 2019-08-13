@@ -19,13 +19,12 @@ package com.tencent.angel.spark.automl
 
 import java.io.File
 
-import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.feature.operator._
+import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.sql.SparkSession
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -41,7 +40,7 @@ class FeatureEngineeringTest extends FunSuite with BeforeAndAfter {
     spark.close()
   }
 
- test("test_iterative_cross") {
+  test("test_iterative_cross") {
 
     val dim = 123
     val incDim = 10
@@ -67,8 +66,8 @@ class FeatureEngineeringTest extends FunSuite with BeforeAndAfter {
     (0 until iter).foreach { iter =>
       // add cartesian operator
       val cartesian = new VectorCartesian()
-      .setInputCols(Array("features", curField))
-      .setOutputCol(curField + cartesianPrefix)
+        .setInputCols(Array("features", curField))
+        .setOutputCol(curField + cartesianPrefix)
       println(s"Cartesian -> input features and $curField, output ${curField + cartesianPrefix}")
       pipelineStages += cartesian
       curField += cartesianPrefix
@@ -112,7 +111,7 @@ class FeatureEngineeringTest extends FunSuite with BeforeAndAfter {
     data.unpersist()
     crossDF.show(1)
 
-    usedFields.takeRight(usedFields.length - 1).foreach{ field =>
+    usedFields.takeRight(usedFields.length - 1).foreach { field =>
       println(crossDF.select(field).schema.fields.last.metadata
         .getStringArray(MetadataTransformUtils.DERIVATION).length + " cross features in " + usedFields.last)
       println(crossDF.select(field).schema.fields.last.metadata

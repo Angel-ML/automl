@@ -18,24 +18,23 @@
 
 package org.apache.spark.ml.feature.operator
 
-import org.apache.spark.ml.{Estimator, Model}
-import org.apache.spark.ml.param._
-import org.apache.spark.ml.util._
-import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
-import org.apache.spark.mllib.linalg.{Vector => OldVector, Vectors => OldVectors}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
-import org.apache.spark.sql.types.{ArrayType, StructField, StructType}
-import org.apache.spark.sql.functions._
-import breeze.linalg.argsort
-import breeze.linalg.{DenseVector => BDV, Vector => BV}
+import breeze.linalg.{argsort, DenseVector => BDV, Vector => BV}
 import breeze.stats.mean
 import org.apache.hadoop.fs.Path
 import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NominalAttribute}
 import org.apache.spark.ml.feature.operator.FtestSelectorModel.FtestSelectorModelWriter
+import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.ml.param._
 import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasLabelCol, HasOutputCol}
+import org.apache.spark.ml.util._
+import org.apache.spark.ml.{Estimator, Model}
+import org.apache.spark.mllib.linalg.{Vector => OldVector, Vectors => OldVectors}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
 
 /**
@@ -64,6 +63,7 @@ private[feature] trait FtestSelectorParams extends Params
     * Percentile of features that selector will select, ordered by statistics value descending.
     * Only applicable when selectorType = "percentile".
     * Default value is 0.1.
+    *
     * @group param
     */
   final val percentile = new DoubleParam(this, "percentile",
@@ -74,6 +74,7 @@ private[feature] trait FtestSelectorParams extends Params
   /**
     * The selector type of the FtestSelector.
     * Supported options: "numTopFeatures" (default), "percentile".
+    *
     * @group param
     */
   final val selectorType = new Param[String](this, "selectorType",
@@ -117,7 +118,7 @@ class FtestSelector(override val uid: String)
   private def fOneWay(data: RDD[LabeledPoint]): Array[Double] = {
 
     def sumOfSquares(rdd: RDD[OldVector], nFeatures: Int): BV[Double] = {
-      val squares: RDD[OldVector] = rdd.map{ v =>
+      val squares: RDD[OldVector] = rdd.map { v =>
         val bv = v.asBreeze
         OldVectors.fromBreeze(bv.map(i => i * i))
       }
@@ -145,14 +146,14 @@ class FtestSelector(override val uid: String)
     val nFeatures = allData.take(1)(0).size
 
     val sstot = sumOfSquares(allData, nFeatures) - squareOfSums(allData, nFeatures) / nSamples.toDouble
-//    println("ssot = \n" + sstot.toArray.mkString(","))
+    //    println("ssot = \n" + sstot.toArray.mkString(","))
 
     var ssbn = BV.zeros[Double](nFeatures)
     for (arg <- args) {
       ssbn += squareOfSums(arg.map(v => OldVectors.fromBreeze(v.asBreeze - offset)), nFeatures) / arg.count().toDouble
     }
     ssbn -= squareOfSums(allData, nFeatures) / nSamples.toDouble
-//    println("ssbn:\n" + ssbn.toArray.mkString(", "))
+    //    println("ssbn:\n" + ssbn.toArray.mkString(", "))
 
     val sswn: BV[Double] = sstot - ssbn
 
@@ -168,7 +169,7 @@ class FtestSelector(override val uid: String)
 
   override def fit(dataset: Dataset[_]): FtestSelectorModel = {
 
-    val data: RDD[LabeledPoint] = dataset.rdd.map{ case Row(label: Double, v: Vector) =>
+    val data: RDD[LabeledPoint] = dataset.rdd.map { case Row(label: Double, v: Vector) =>
       LabeledPoint(label, OldVectors.fromML(v))
     }
 
@@ -178,9 +179,15 @@ class FtestSelector(override val uid: String)
       .toArray.reverse
 
     new FtestSelectorModel(uid, sortedIndices)
-      .setFeaturesCol(${featuresCol})
-      .setOutputCol(${outputCol})
-      .setNumTopFeatures(${numTopFeatures})
+      .setFeaturesCol($ {
+        featuresCol
+      })
+      .setOutputCol($ {
+        outputCol
+      })
+      .setNumTopFeatures($ {
+        numTopFeatures
+      })
   }
 
   override def transformSchema(schema: StructType): StructType = {
@@ -262,7 +269,7 @@ class FtestSelectorModel(override val uid: String,
           Vectors.sparse(dv.size, topKFeatures, values)
         case sv: SparseVector =>
           val selectedPairs = sv.indices.zip(sv.values)
-            .filter{ case (k, v) => topKFeatures.contains(k) }
+            .filter { case (k, v) => topKFeatures.contains(k) }
           Vectors.sparse(sv.size, selectedPairs.map(_._1), selectedPairs.map(_._2))
         case _ =>
           throw new IllegalArgumentException("Require DenseVector or SparseVector in spark.ml.linalg, but "

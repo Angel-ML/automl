@@ -18,8 +18,8 @@
 
 package com.tencent.angel.spark.automl.tuner.acquisition
 
-import org.apache.spark.ml.linalg.Vector
 import com.tencent.angel.spark.automl.tuner.surrogate.Surrogate
+import org.apache.spark.ml.linalg.Vector
 
 
 /**

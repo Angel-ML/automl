@@ -18,7 +18,6 @@
 
 package com.tencent.angel.spark.automl.tuner.parameter
 
-import com.tencent.angel.spark.automl.tuner.TunerParam
 import com.tencent.angel.spark.automl.utils.{AutoMLException, Distribution}
 
 import scala.collection.mutable.ArrayBuffer

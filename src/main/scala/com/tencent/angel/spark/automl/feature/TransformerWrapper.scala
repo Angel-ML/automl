@@ -18,8 +18,8 @@
 
 package com.tencent.angel.spark.automl.feature
 
-import org.apache.spark.ml.{PipelineStage, Transformer}
 import com.tencent.angel.spark.automl.feature.InToOutRelation.InToOutRelation
+import org.apache.spark.ml.PipelineStage
 
 abstract class TransformerWrapper {
 

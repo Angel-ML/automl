@@ -20,10 +20,8 @@ package com.tencent.angel.spark.automl.tuner.parameter
 
 import com.tencent.angel.spark.automl.utils.AutoMLException
 
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, _}
 import scala.util.Random
-
-import scala.reflect._
 
 /**
   * Search space with discrete values

@@ -18,7 +18,7 @@
 package com.tencent.angel.spark.automl
 
 import com.tencent.angel.spark.automl.tuner.config.Configuration
-import com.tencent.angel.spark.automl.tuner.parameter.{DiscreteSpace, ParamSpace}
+import com.tencent.angel.spark.automl.tuner.parameter.ParamSpace
 import com.tencent.angel.spark.automl.tuner.solver.Solver
 import com.tencent.angel.spark.automl.tuner.trail.{TestTrail, Trail}
 import org.apache.spark.ml.linalg.Vector
@@ -26,7 +26,7 @@ import org.scalatest.FunSuite
 
 class TunerTest extends FunSuite {
 
- test("test_random") {
+  test("test_random") {
     val param1 = ParamSpace.fromConfigString("param3", "{2.0,3.0,4.0,5.0,6.0}")
     val param2 = ParamSpace.fromConfigString("param4", "{3:10:1}")
     val solver: Solver = Solver(Array(param1, param2), true, surrogate = "Random")

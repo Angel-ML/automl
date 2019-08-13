@@ -19,12 +19,12 @@
 package com.tencent.angel.spark.automl.tuner.surrogate
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
-import org.apache.spark.ml.linalg.Vector
 import com.tencent.angel.spark.automl.tuner.config.ConfigurationSpace
 import com.tencent.angel.spark.automl.tuner.kernel.Matern5Iso
 import com.tencent.angel.spark.automl.tuner.model.GPModel
 import com.tencent.angel.spark.automl.utils.DataUtils
 import org.apache.commons.logging.{Log, LogFactory}
+import org.apache.spark.ml.linalg.Vector
 
 class GPSurrogate(
                    override val cs: ConfigurationSpace,
@@ -45,7 +45,7 @@ class GPSurrogate(
     val breezeX: BDM[Double] = DataUtils.toBreeze(preX.toArray)
     val breezeY: BDV[Double] = DataUtils.toBreeze(preY.toArray)
     val success = gpModel.fit(breezeX, breezeY)
-    if(!success) {
+    if (!success) {
       preX.remove(preX.length - 1)
       preY.remove(preY.length - 1)
       println(s"drop the new configuration owing to convergence failure.")

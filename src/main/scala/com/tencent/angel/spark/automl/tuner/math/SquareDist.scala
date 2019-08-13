@@ -19,8 +19,7 @@
 package com.tencent.angel.spark.automl.tuner.math
 
 import breeze.generic.UFunc
-import breeze.linalg.{DenseMatrix => BDM}
-import breeze.linalg._
+import breeze.linalg.{DenseMatrix => BDM, _}
 
 /**
   * Computes pair-wise square distances between matrices x1 and x2.

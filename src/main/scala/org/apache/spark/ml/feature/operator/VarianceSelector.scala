@@ -23,8 +23,8 @@ import org.apache.hadoop.fs.Path
 import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NominalAttribute}
 import org.apache.spark.ml.feature.operator.VarianceSelectorModel.VarianceSelectorModelWriter
 import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
-import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasOutputCol}
 import org.apache.spark.ml.param._
+import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasOutputCol}
 import org.apache.spark.ml.util._
 import org.apache.spark.ml.{Estimator, Model}
 import org.apache.spark.mllib.linalg.{Vector => OldVector, Vectors => OldVectors}
@@ -33,8 +33,6 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions.{col, udf}
 import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
-
-import scala.collection.mutable.{ArrayBuffer, ArrayBuilder}
 
 /**
   * Params for [[VarianceSelector]] and [[VarianceSelectorModel]].
@@ -62,6 +60,7 @@ private[feature] trait VarianceSelectorParams extends Params
     * Percentile of features that selector will select, ordered by statistics value descending.
     * Only applicable when selectorType = "percentile".
     * Default value is 0.1.
+    *
     * @group param
     */
   final val percentile = new DoubleParam(this, "percentile",
@@ -72,6 +71,7 @@ private[feature] trait VarianceSelectorParams extends Params
   /**
     * The selector type of the VarianceSelector.
     * Supported options: "numTopFeatures" (default), "percentile".
+    *
     * @group param
     */
   final val selectorType = new Param[String](this, "selectorType",
@@ -107,7 +107,7 @@ class VarianceSelector(override val uid: String)
   def setSelectorType(value: String): this.type = set(selectorType, value)
 
   override def fit(dataset: Dataset[_]): VarianceSelectorModel = {
-    val featuresRDD: RDD[OldVector]  = dataset.select(col($(featuresCol))).rdd.map{case Row(v: Vector) =>
+    val featuresRDD: RDD[OldVector] = dataset.select(col($(featuresCol))).rdd.map { case Row(v: Vector) =>
       OldVectors.dense(v.toArray)
     }
     val summary: MultivariateStatisticalSummary = Statistics.colStats(featuresRDD)
@@ -203,7 +203,7 @@ class VarianceSelectorModel(override val uid: String,
           Vectors.sparse(dv.size, topKFeatures, values)
         case sv: SparseVector =>
           val selectedPairs = sv.indices.zip(sv.values)
-            .filter{ case (k, v) => topKFeatures.contains(k) }
+            .filter { case (k, v) => topKFeatures.contains(k) }
           Vectors.sparse(sv.size, selectedPairs.map(_._1), selectedPairs.map(_._2))
         case _ =>
           throw new IllegalArgumentException("Require DenseVector or SparseVector in spark.ml.linalg, but "

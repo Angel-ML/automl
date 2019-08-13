@@ -20,7 +20,7 @@ package com.tencent.angel.spark.automl.tuner.config
 
 import com.tencent.angel.spark.automl.tuner.TunerParam
 import com.tencent.angel.spark.automl.tuner.math.BreezeOp._
-import com.tencent.angel.spark.automl.tuner.parameter.{ContinuousSpace, DiscreteSpace, ParamSpace}
+import com.tencent.angel.spark.automl.tuner.parameter.{ContinuousSpace, ParamSpace}
 import com.tencent.angel.spark.automl.utils.AutoMLException
 import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.spark.ml.linalg.{Vector, Vectors}
@@ -58,7 +58,7 @@ class ConfigurationSpace(
     params.foreach(addParam)
   }
 
-  def addParam[T <: AnyVal: ClassTag](param: ParamSpace[T]): Unit = {
+  def addParam[T <: AnyVal : ClassTag](param: ParamSpace[T]): Unit = {
     if (!paramDict.contains(param.name)) {
       fields += DataTypes.createStructField(param.name, DataTypes.DoubleType, false)
       paramType += param.name -> (param.pType, param.vType)
@@ -100,9 +100,9 @@ class ConfigurationSpace(
   def addHistory(vec: Vector): Unit = preX += vec
 
   def setAllToGrid(): Unit = {
-    getParams().foreach{
+    getParams().foreach {
       case cParam: ContinuousSpace =>
-          if(!cParam.isGrid)  cParam.resetGrid(TunerParam.defaultGridSize)
+        if (!cParam.isGrid) cParam.resetGrid(TunerParam.defaultGridSize)
       case _ =>
     }
   }
@@ -110,7 +110,7 @@ class ConfigurationSpace(
   def spaceSize(): Int = {
     var size: Int = if (numParams > 0) 1 else 0
     var hasInfinite = false
-    getParams().foreach{ param =>
+    getParams().foreach { param =>
       param.numValues match {
         case Int.MaxValue => hasInfinite = true
         case _ => size *= param.numValues

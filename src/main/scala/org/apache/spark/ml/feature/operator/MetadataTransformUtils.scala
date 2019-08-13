@@ -18,7 +18,6 @@
 package org.apache.spark.ml.feature.operator
 
 import org.apache.spark.sql.types.{MetadataBuilder, StructField}
-import org.apache.spark.sql.{DataFrame, Dataset}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -31,12 +30,13 @@ object MetadataTransformUtils {
 
   /**
     * create derivation for all features
+    *
     * @param numFeatures
     * @return
     */
   private def createDerivation(numFeatures: Int): Array[String] = {
     val arrayBuffer = ArrayBuffer[String]()
-    (0 until numFeatures).foreach{ i =>
+    (0 until numFeatures).foreach { i =>
       arrayBuffer.append("f_" + i.toString)
     }
     arrayBuffer.toArray
@@ -45,7 +45,7 @@ object MetadataTransformUtils {
 
   private def createSelectedDerivation(selectedFeatures: Array[Int]): Array[String] = {
     val arrayBuffer = ArrayBuffer[String]()
-    selectedFeatures.foreach{ i =>
+    selectedFeatures.foreach { i =>
       arrayBuffer.append("f_" + i.toString)
     }
     arrayBuffer.toArray
@@ -60,8 +60,8 @@ object MetadataTransformUtils {
     */
   private def cartesianWithArray(feature1: Array[String], feature2: Array[String]): Array[String] = {
     val res = ArrayBuffer[String]()
-    feature1.foreach{ f1 =>
-      feature2.foreach{ f2 =>
+    feature1.foreach { f1 =>
+      feature2.foreach { f2 =>
         res.append("(" + f1 + " x " + f2 + ")")
       }
     }
@@ -92,7 +92,7 @@ object MetadataTransformUtils {
 
   /**
     *
-    * @param fields: The Array[StructField]
+    * @param fields      : The Array[StructField]
     * @param numFeatures number of features
     * @return
     */

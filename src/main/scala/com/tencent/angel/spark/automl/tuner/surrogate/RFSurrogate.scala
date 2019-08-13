@@ -19,9 +19,9 @@
 package com.tencent.angel.spark.automl.tuner.surrogate
 
 import com.tencent.angel.spark.automl.tuner.config.ConfigurationSpace
-import org.apache.spark.ml.linalg.Vector
 import com.tencent.angel.spark.automl.utils.DataUtils
 import org.apache.commons.logging.{Log, LogFactory}
+import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.ml.regression.{DecisionTreeRegressionModel, RandomForestRegressionModel, RandomForestRegressor}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 

@@ -90,8 +90,8 @@ object ParamParser {
 
   def getParamRange(configs: Array[String], paramType: String): String = {
     paramType match {
-      case "discrete" => configs(3).mkString("{","","}")
-      case "continuous" => configs(3).mkString("[","","]")
+      case "discrete" => configs(3).mkString("{", "", "}")
+      case "continuous" => configs(3).mkString("[", "", "]")
       // TODO: use categorical specific format
       case "categorical" => configs(3)
     }

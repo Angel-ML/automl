@@ -1,8 +1,6 @@
 package com.tencent.angel.spark.automl.feature
 
-import com.tencent.angel.spark.automl.feature.TransformerWrapper
 import com.tencent.angel.spark.automl.feature.preprocess.{MinMaxScalerWrapper, StandardScalerWrapper}
-import org.apache.spark.ml.PipelineModel
 import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.sql.SparkSession
 

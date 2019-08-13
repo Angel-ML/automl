@@ -19,11 +19,11 @@
 package com.tencent.angel.spark.automl.tuner.surrogate
 
 import com.tencent.angel.spark.automl.tuner.config.ConfigurationSpace
-import org.apache.spark.ml.linalg.Vector
 import org.apache.commons.logging.{Log, LogFactory}
+import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.types.{DataTypes, StructField, StructType}
 
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * Abstract base class for surrogate model.

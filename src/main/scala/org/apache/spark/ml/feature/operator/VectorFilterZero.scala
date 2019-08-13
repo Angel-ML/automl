@@ -18,25 +18,27 @@
 package org.apache.spark.ml.feature.operator
 
 import org.apache.spark.SparkException
-import org.apache.spark.annotation.Since
 import org.apache.spark.ml.Transformer
-import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NumericAttribute, UnresolvedAttribute}
+import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NumericAttribute}
 import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.ml.linalg.{SparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.param.shared.{HasInputCol, HasOutputCol}
 import org.apache.spark.ml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import org.apache.spark.sql.functions.{col, struct, udf}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
-import scala.collection.mutable.{ArrayBuffer, ArrayBuilder}
+import scala.collection.mutable.ArrayBuilder
+import scala.language.postfixOps
 
 class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
   extends Transformer with HasInputCol with HasOutputCol with DefaultParamsWritable {
 
   def this(featureMap: Map[Int, Int]) = this(featureMap, Identifiable.randomUID("VectorFilterZero"))
-  def this() = this( Map[Int, Int](), Identifiable.randomUID("VectorFilterZero"))
+
+  def this() = this(Map[Int, Int](), Identifiable.randomUID("VectorFilterZero"))
+
   def this(uid: String) = this(Map[Int, Int](), uid)
 
   /** @group setParam */
@@ -88,7 +90,7 @@ class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
   override def copy(extra: ParamMap): VectorAssembler = defaultCopy(extra)
 }
 
-object VectorFilterZero extends DefaultParamsReadable[VectorFilterZero]{
+object VectorFilterZero extends DefaultParamsReadable[VectorFilterZero] {
 
   override def load(path: String): VectorFilterZero = super.load(path)
 
@@ -124,7 +126,7 @@ object VectorFilterZero extends DefaultParamsReadable[VectorFilterZero]{
   private def getNonZero(dataset: Dataset[_],
                          column: String): Array[Int] = {
     dataset.select(column).rdd.mapPartitions { rows: Iterator[Row] =>
-      val mergeIndices = rows.map{ case Row(v: Vector) =>
+      val mergeIndices = rows.map { case Row(v: Vector) =>
         v match {
           case sv: SparseVector =>
             sv.indices

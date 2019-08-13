@@ -15,26 +15,26 @@
  *
  */
 
+
 package com.tencent.angel.spark.automl
 
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NumericAttribute}
 import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
-import org.apache.spark.ml.feature.{Interaction, VectorAssembler}
 import org.apache.spark.ml.feature.operator.{SelfCartesian, VectorCartesian}
-import org.apache.spark.ml.linalg.{DenseVector, Vectors}
-import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.ml.feature.{Interaction, VectorAssembler}
 import org.apache.spark.ml.linalg.SQLDataTypes.VectorType
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
+import org.apache.spark.ml.linalg.{DenseVector, Vectors}
+import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.sql.{Row, SparkSession}
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
 class FeatureCrossTest extends FunSuite with BeforeAndAfter {
 
   var spark: SparkSession = _
 
   before {
-     spark = SparkSession.builder().master("local").getOrCreate()
+    spark = SparkSession.builder().master("local").getOrCreate()
   }
 
   after {
@@ -43,7 +43,7 @@ class FeatureCrossTest extends FunSuite with BeforeAndAfter {
 
   test("test_interaction") {
     val data = Seq(
-      Row(Vectors.dense(Array(1.0,2.0,3.0)), Vectors.dense(Array(2.0,3.0,4.0)), Vectors.dense(Array(3.0,4.0,5.0)))
+      Row(Vectors.dense(Array(1.0, 2.0, 3.0)), Vectors.dense(Array(2.0, 3.0, 4.0)), Vectors.dense(Array(3.0, 4.0, 5.0)))
     )
 
     val defaultAttr = NumericAttribute.defaultAttr

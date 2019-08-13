@@ -34,11 +34,13 @@ class NormalSurrogate(override val cs: ConfigurationSpace,
     * NormalSurrogate is designed for random-search and grid-search
     * Thus it doesn't need train and predict function
     */
-  override def train(): Unit = { }
+  override def train(): Unit = {}
 
 
-  def predict(X: Vector): (Double, Double) = { (0.0, 0.0) }
+  def predict(X: Vector): (Double, Double) = {
+    (0.0, 0.0)
+  }
 
-  override def stop(): Unit = { }
+  override def stop(): Unit = {}
 
 }

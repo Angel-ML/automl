@@ -20,6 +20,8 @@ package com.tencent.angel.spark.automl.feature
 import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector}
 import org.apache.spark.sql.{Dataset, Row}
 
+import scala.language.postfixOps
+
 object FeatureUtils {
 
   def maxDim(dataset: Dataset[Row], col: String = "features"): Int = {

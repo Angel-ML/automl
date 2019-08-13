@@ -18,22 +18,21 @@
 
 package org.apache.spark.ml.feature.operator
 
-import org.apache.spark.ml.classification.LogisticRegression
-import org.apache.spark.ml.{Estimator, Model}
-import org.apache.spark.ml.param._
-import org.apache.spark.ml.util._
-import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
-import org.apache.spark.sql.{DataFrame, Dataset}
-import org.apache.spark.sql.types.{ArrayType, StructField, StructType}
-import org.apache.spark.sql.functions._
-import breeze.linalg.argsort
-import breeze.linalg.{DenseVector => BDV}
-import Math.abs
+import java.lang.Math.abs
 
+import breeze.linalg.{argsort, DenseVector => BDV}
 import org.apache.hadoop.fs.Path
 import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NominalAttribute}
+import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.operator.LassoSelectorModel.LassoSelectorModelWriter
+import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.ml.param._
 import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasLabelCol, HasOutputCol}
+import org.apache.spark.ml.util._
+import org.apache.spark.ml.{Estimator, Model}
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Dataset}
 
 
 /**
@@ -62,6 +61,7 @@ private[feature] trait LassoSelectorParams extends Params
     * Percentile of features that selector will select, ordered by statistics value descending.
     * Only applicable when selectorType = "percentile".
     * Default value is 0.1.
+    *
     * @group param
     */
   final val percentile = new DoubleParam(this, "percentile",
@@ -72,6 +72,7 @@ private[feature] trait LassoSelectorParams extends Params
   /**
     * The selector type of the LassoSelector.
     * Supported options: "numTopFeatures" (default), "percentile".
+    *
     * @group param
     */
   final val selectorType = new Param[String](this, "selectorType",
@@ -112,8 +113,12 @@ class LassoSelector(override val uid: String)
   override def fit(dataset: Dataset[_]): LassoSelectorModel = {
 
     val lr = new LogisticRegression()
-      .setFeaturesCol(${featuresCol})
-      .setLabelCol(${labelCol})
+      .setFeaturesCol($ {
+        featuresCol
+      })
+      .setLabelCol($ {
+        labelCol
+      })
       .setElasticNetParam(1.0)
       .setMaxIter(10)
 
@@ -125,8 +130,12 @@ class LassoSelector(override val uid: String)
       .toArray.reverse
 
     new LassoSelectorModel(uid, sortedIndices)
-      .setFeaturesCol(${featuresCol})
-      .setOutputCol(${outputCol})
+      .setFeaturesCol($ {
+        featuresCol
+      })
+      .setOutputCol($ {
+        outputCol
+      })
       .setNumTopFeatures($(numTopFeatures))
   }
 
@@ -209,7 +218,7 @@ class LassoSelectorModel(override val uid: String,
           Vectors.sparse(dv.size, topKFeatures, values)
         case sv: SparseVector =>
           val selectedPairs = sv.indices.zip(sv.values)
-            .filter{ case (k, v) => topKFeatures.contains(k) }
+            .filter { case (k, v) => topKFeatures.contains(k) }
           Vectors.sparse(sv.size, selectedPairs.map(_._1), selectedPairs.map(_._2))
         case _ =>
           throw new IllegalArgumentException("Require DenseVector or SparseVector in spark.ml.linalg, but "

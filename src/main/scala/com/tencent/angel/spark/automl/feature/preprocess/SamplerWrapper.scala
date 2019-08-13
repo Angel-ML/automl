@@ -18,8 +18,7 @@
 
 package com.tencent.angel.spark.automl.feature.preprocess
 
-import com.tencent.angel.spark.automl.feature.InToOutRelation.InToOutRelation
-import com.tencent.angel.spark.automl.feature.InToOutRelation.InPlace
+import com.tencent.angel.spark.automl.feature.InToOutRelation.{InPlace, InToOutRelation}
 import com.tencent.angel.spark.automl.feature.TransformerWrapper
 import org.apache.spark.ml.Transformer
 

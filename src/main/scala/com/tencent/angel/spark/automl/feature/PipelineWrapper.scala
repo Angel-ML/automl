@@ -49,7 +49,7 @@ class PipelineModelWrapper(val model: PipelineModel,
   def transform(dataset: Dataset[_]): DataFrame = {
     var df = model.transform(dataset)
     if (transformers.length >= 2) {
-      (0 until transformers.length - 1).foreach{ i =>
+      (0 until transformers.length - 1).foreach { i =>
         val outCols = transformers(i).getOutputCols
         for (col <- outCols) {
           df = df.drop(col)

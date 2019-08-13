@@ -18,11 +18,11 @@
 package com.tencent.angel.spark.automl.feature.examples
 
 import org.apache.spark.SparkConf
-import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
+import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
-import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.feature.operator.{VarianceSelector, VectorCartesian, VectorFilterZero}
+import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.sql.SparkSession
 
 import scala.collection.mutable.ArrayBuffer

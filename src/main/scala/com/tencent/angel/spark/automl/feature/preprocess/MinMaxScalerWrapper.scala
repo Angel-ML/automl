@@ -19,7 +19,7 @@ package com.tencent.angel.spark.automl.feature.preprocess
 
 import com.tencent.angel.spark.automl.feature.InToOutRelation.{InToOutRelation, OneToOne}
 import com.tencent.angel.spark.automl.feature.TransformerWrapper
-import org.apache.spark.ml.feature.{MinMaxScaler, MinMaxScalerModel}
+import org.apache.spark.ml.feature.MinMaxScaler
 
 private[feature] class MinMaxScalerWrapper extends TransformerWrapper {
 

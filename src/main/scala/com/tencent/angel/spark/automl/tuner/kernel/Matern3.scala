@@ -18,8 +18,7 @@
 
 package com.tencent.angel.spark.automl.tuner.kernel
 
-import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
-import breeze.linalg._
+import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, _}
 import breeze.numerics.{exp, pow, sqrt}
 import com.tencent.angel.spark.automl.tuner.math.SquareDist
 

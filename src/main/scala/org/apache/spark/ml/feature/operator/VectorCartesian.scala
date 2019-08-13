@@ -21,18 +21,18 @@ import org.apache.spark.SparkException
 import org.apache.spark.annotation.Since
 import org.apache.spark.ml.Transformer
 import org.apache.spark.ml.attribute._
-import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.ml.linalg.SQLDataTypes.VectorType
+import org.apache.spark.ml.linalg.{Vector, VectorUDT, Vectors}
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.param.shared.{HasInputCols, HasOutputCol}
 import org.apache.spark.ml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import org.apache.spark.sql.functions.{col, struct, udf}
 import org.apache.spark.sql.types._
-import org.apache.spark.ml.linalg.SQLDataTypes.VectorType
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
 import scala.collection.mutable.ArrayBuilder
 
-class VectorCartesian (override val uid: String) extends Transformer
+class VectorCartesian(override val uid: String) extends Transformer
   with HasInputCols with HasOutputCol with DefaultParamsWritable {
 
   def this() = this(Identifiable.randomUID("VectorCartesian"))
@@ -57,7 +57,9 @@ class VectorCartesian (override val uid: String) extends Transformer
     val startTime = System.currentTimeMillis()
     transformSchema(dataset.schema, logging = true)
     val inputFeatures = $(inputCols).map(c => dataset.schema(c))
-    val vectorDims = getVectorDimension(dataset, ${inputCols})
+    val vectorDims = getVectorDimension(dataset, $ {
+      inputCols
+    })
     val featureAttrs = getFeatureAttrs(inputFeatures)
 
     def interactFunc = udf { row: Row =>
@@ -113,7 +115,7 @@ class VectorCartesian (override val uid: String) extends Transformer
     * Given an input row of features, invokes the specific function for every non-zero output.
     *
     * @param value The row value to encode, either a Double or Vector.
-    * @param f The callback to invoke on each non-zero (index, value) output pair.
+    * @param f     The callback to invoke on each non-zero (index, value) output pair.
     */
   def processNonzeroOutput(value: Any, f: (Int, Double) => Unit): Unit = value match {
     case vec: Vector =>
@@ -165,7 +167,7 @@ class VectorCartesian (override val uid: String) extends Transformer
     * each separated by an underscore.
     *
     * @param inputAttrs The attributes of the input feature.
-    * @param groupName Optional name of the input feature group (for Vector type features).
+    * @param groupName  Optional name of the input feature group (for Vector type features).
     */
   private def encodedFeatureAttrs(
                                    inputAttrs: Array[Attribute],

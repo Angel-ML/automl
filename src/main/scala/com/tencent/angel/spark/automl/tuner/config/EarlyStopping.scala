@@ -23,7 +23,7 @@ package com.tencent.angel.spark.automl.tuner.config
   *
   * @param patience : How long to wait after last time validation loss improved.
   *                 Default: 5
-  * @param minimize   : Whether to minimize or maximize the val_score
+  * @param minimize : Whether to minimize or maximize the val_score
   *                 Default: false
   */
 class EarlyStopping(patience: Int = 5,
@@ -36,6 +36,7 @@ class EarlyStopping(patience: Int = 5,
   val pat = patience
 
   def greater(a: Double, b: Double): Boolean = a > b
+
   def less(a: Double, b: Double): Boolean = a < b
 
   val monitorOp: (Double, Double) => Boolean = if (minimize) less else greater

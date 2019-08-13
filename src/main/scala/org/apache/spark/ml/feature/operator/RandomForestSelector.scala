@@ -23,16 +23,13 @@ import org.apache.spark.ml.attribute.{Attribute, AttributeGroup, NominalAttribut
 import org.apache.spark.ml.classification.RandomForestClassifier
 import org.apache.spark.ml.feature.operator.RandomForestSelectorModel.RandomForestSelectorModelWriter
 import org.apache.spark.ml.linalg.{DenseVector, SparseVector, Vector, VectorUDT, Vectors}
-import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasLabelCol, HasOutputCol}
 import org.apache.spark.ml.param._
+import org.apache.spark.ml.param.shared.{HasFeaturesCol, HasLabelCol, HasOutputCol}
 import org.apache.spark.ml.util._
 import org.apache.spark.ml.{Estimator, Model}
-import org.apache.spark.mllib.linalg.{Vector => OldVector, Vectors => OldVectors}
-import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
-import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions.{col, udf}
-import org.apache.spark.sql.types.{MetadataBuilder, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Dataset}
 
 /**
   * Params for [[RandomForestSelector]] and [[RandomForestSelectorModel]].
@@ -60,6 +57,7 @@ private[feature] trait RandomForestSelectorParams extends Params
     * Percentile of features that selector will select, ordered by statistics value descending.
     * Only applicable when selectorType = "percentile".
     * Default value is 0.1.
+    *
     * @group param
     */
   final val percentile = new DoubleParam(this, "percentile",
@@ -70,6 +68,7 @@ private[feature] trait RandomForestSelectorParams extends Params
   /**
     * The selector type of the RandomForestSelector.
     * Supported options: "numTopFeatures" (default), "percentile".
+    *
     * @group param
     */
   final val selectorType = new Param[String](this, "selectorType",
@@ -108,8 +107,12 @@ class RandomForestSelector(override val uid: String)
 
   override def fit(dataset: Dataset[_]): RandomForestSelectorModel = {
     val rf = new RandomForestClassifier()
-      .setFeaturesCol(${featuresCol})
-      .setLabelCol(${labelCol})
+      .setFeaturesCol($ {
+        featuresCol
+      })
+      .setLabelCol($ {
+        labelCol
+      })
 
     val rfModel = rf.fit(dataset)
 
@@ -119,8 +122,12 @@ class RandomForestSelector(override val uid: String)
       .toArray.reverse
 
     new RandomForestSelectorModel(uid, sortedIndices)
-      .setFeaturesCol(${featuresCol})
-      .setOutputCol(${outputCol})
+      .setFeaturesCol($ {
+        featuresCol
+      })
+      .setOutputCol($ {
+        outputCol
+      })
       .setNumTopFeatures($(numTopFeatures))
   }
 
@@ -158,7 +165,7 @@ object RandomForestSelector extends DefaultParamsReadable[RandomForestSelector] 
   * Model fitted by [[RandomForestSelector]].
   */
 class RandomForestSelectorModel(override val uid: String,
-                            val selectedFeatures: Array[Int])
+                                val selectedFeatures: Array[Int])
   extends Model[RandomForestSelectorModel] with RandomForestSelectorParams with MLWritable {
 
   private var topKFeatures: Array[Int] = _
@@ -205,7 +212,7 @@ class RandomForestSelectorModel(override val uid: String,
           Vectors.sparse(dv.size, topKFeatures, values)
         case sv: SparseVector =>
           val selectedPairs = sv.indices.zip(sv.values)
-            .filter{ case (k, v) => topKFeatures.contains(k) }
+            .filter { case (k, v) => topKFeatures.contains(k) }
           Vectors.sparse(sv.size, selectedPairs.map(_._1), selectedPairs.map(_._2))
         case _ =>
           throw new IllegalArgumentException("Require DenseVector or SparseVector in spark.ml.linalg, but "
@@ -217,7 +224,9 @@ class RandomForestSelectorModel(override val uid: String,
       $(outputCol),
       select(col($(featuresCol))),
       MetadataTransformUtils.featureSelectionTransform(
-        dataset.select(${featuresCol}).schema.fields.last, topKFeatures, selectedFeatures.length).build())
+        dataset.select($ {
+          featuresCol
+        }).schema.fields.last, topKFeatures, selectedFeatures.length).build())
       .drop($(featuresCol))
   }
 

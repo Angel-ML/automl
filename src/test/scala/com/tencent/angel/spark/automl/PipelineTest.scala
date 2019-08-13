@@ -20,8 +20,7 @@ package com.tencent.angel.spark.automl
 import com.tencent.angel.spark.automl.feature.preprocess.{HashingTFWrapper, IDFWrapper, TokenizerWrapper}
 import com.tencent.angel.spark.automl.feature.{PipelineBuilder, PipelineWrapper, TransformerWrapper}
 import org.apache.spark.sql.SparkSession
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
 class PipelineTest extends FunSuite with BeforeAndAfter {
 
@@ -52,7 +51,7 @@ class PipelineTest extends FunSuite with BeforeAndAfter {
 
     val stages = PipelineBuilder.build(transformers)
 
-    transformers.foreach{ transformer =>
+    transformers.foreach { transformer =>
       val inputCols = transformer.getInputCols
       val outputCols = transformer.getOutputCols
       inputCols.foreach(print)
@@ -67,7 +66,7 @@ class PipelineTest extends FunSuite with BeforeAndAfter {
 
     val outputDF = model.transform(sentenceData)
     outputDF.select("outIDF").show()
-    outputDF.select("outIDF").foreach{ row =>
+    outputDF.select("outIDF").foreach { row =>
       println(row.get(0).getClass.getSimpleName)
       val arr = row.get(0)
       println(arr.toString)

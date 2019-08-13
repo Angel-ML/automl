@@ -21,8 +21,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.feature.operator.{MetadataTransformUtils, VectorCartesian}
 import org.apache.spark.sql.SparkSession
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, FunSuite}
 
 class MetadataTest extends FunSuite with BeforeAndAfter {
 
@@ -56,7 +55,7 @@ class MetadataTest extends FunSuite with BeforeAndAfter {
     val featureModel = pipeline.fit(data)
     val crossDF = featureModel.transform(data)
 
-    crossDF.schema.fields.foreach{ field =>
+    crossDF.schema.fields.foreach { field =>
       println("name: " + field.name)
       println("metadata: " + field.metadata.toString())
     }

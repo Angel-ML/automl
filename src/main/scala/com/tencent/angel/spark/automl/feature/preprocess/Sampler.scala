@@ -19,11 +19,11 @@
 package com.tencent.angel.spark.automl.feature.preprocess
 
 import org.apache.spark.ml.linalg.Vector
-import org.apache.spark.ml.{Pipeline, Transformer}
 import org.apache.spark.ml.param.{Param, ParamMap}
 import org.apache.spark.ml.util.Identifiable
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.ml.{Pipeline, Transformer}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 
 import scala.util.Random
 

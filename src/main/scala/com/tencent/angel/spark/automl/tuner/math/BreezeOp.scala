@@ -18,8 +18,7 @@
 
 package com.tencent.angel.spark.automl.tuner.math
 
-import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
-import breeze.linalg.{cholesky, diag, inv, sum, trace}
+import breeze.linalg.{cholesky, diag, inv, sum, trace, DenseMatrix => BDM, DenseVector => BDV}
 import breeze.numerics.log
 
 import scala.math.Pi

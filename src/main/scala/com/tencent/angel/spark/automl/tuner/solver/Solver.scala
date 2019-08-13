@@ -19,14 +19,14 @@
 package com.tencent.angel.spark.automl.tuner.solver
 
 import com.tencent.angel.spark.automl.tuner.TunerParam
-import com.tencent.angel.spark.automl.tuner.acquisition.{Acquisition, EI}
 import com.tencent.angel.spark.automl.tuner.acquisition.optimizer.{AcqOptimizer, RandomSearch}
+import com.tencent.angel.spark.automl.tuner.acquisition.{Acquisition, EI}
 import com.tencent.angel.spark.automl.tuner.config.{Configuration, ConfigurationSpace}
 import com.tencent.angel.spark.automl.tuner.parameter.{ContinuousSpace, DiscreteSpace, ParamSpace}
 import com.tencent.angel.spark.automl.tuner.surrogate._
 import com.tencent.angel.spark.automl.utils.AutoMLException
-import org.apache.spark.ml.linalg.Vector
 import org.apache.commons.logging.{Log, LogFactory}
+import org.apache.spark.ml.linalg.Vector
 
 import scala.collection.mutable
 

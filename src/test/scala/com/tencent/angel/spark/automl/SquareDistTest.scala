@@ -32,7 +32,7 @@ class SquareDistTest extends FunSuite {
     assertEquals(expected, SquareDist(x, x))
   }
 
-  test("test_XX_2D")  {
+  test("test_XX_2D") {
 
     val x = DenseMatrix((1.0, 2.0, 3.0), (4.0, 5.0, 6.0)).t
     val expected = DenseMatrix((0.0, 2.0, 8.0), (2.0, 0.0, 2.0), (8.0, 2.0, 0.0))

@@ -18,11 +18,10 @@
 
 package com.tencent.angel.spark.automl.tuner.acquisition
 
-import org.apache.spark.ml.linalg.{Vector, Vectors}
+import com.tencent.angel.spark.automl.tuner.surrogate.Surrogate
 import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.commons.math3.distribution.NormalDistribution
-
-import com.tencent.angel.spark.automl.tuner.surrogate.Surrogate
+import org.apache.spark.ml.linalg.{Vector, Vectors}
 
 /**
   * Expected improvement.

@@ -19,8 +19,8 @@ package org.apache.spark.ml.feature.operator
 
 import com.tencent.angel.spark.automl.feature.cross.FeatureCrossOp
 import org.apache.spark.annotation.Since
-import org.apache.spark.ml.linalg.{Vector, VectorUDT}
 import org.apache.spark.ml.UnaryTransformer
+import org.apache.spark.ml.linalg.{Vector, VectorUDT}
 import org.apache.spark.ml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
 import org.apache.spark.sql.types.DataType
 

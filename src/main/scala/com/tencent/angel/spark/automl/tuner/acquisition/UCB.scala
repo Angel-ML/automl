@@ -33,10 +33,10 @@ import org.apache.spark.ml.linalg.{Vector, Vectors}
   * 	          - v: hyperparameter v = 1
   * 		        - delta: small constant 0.1 (prob of regret)
   *             Suggest value：beta = sqrt( v* (2*  log( (t**(d/2. + 2))*(pi**2)/(3. * delta)  )))
- */
+  */
 class UCB(
-          override val surrogate: Surrogate,
-          val beta: Double = 100)
+           override val surrogate: Surrogate,
+           val beta: Double = 100)
   extends Acquisition(surrogate) {
 
   val LOG: Log = LogFactory.getLog(classOf[Surrogate])
@@ -52,7 +52,7 @@ class UCB(
       // using a RF, std should be never exactly 0.0
       (0.0, Vectors.dense(new Array[Double](X.size)))
     } else {
-      val ucb = m + beta*s
+      val ucb = m + beta * s
 
       (ucb, Vectors.dense(new Array[Double](X.size)))
     }
