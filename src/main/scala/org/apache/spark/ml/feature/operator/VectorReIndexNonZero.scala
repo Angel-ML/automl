@@ -32,12 +32,12 @@ import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import scala.collection.mutable.ArrayBuilder
 import scala.language.postfixOps
 
-class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
+class VectorReIndexNonZero(var featureMap: Map[Int, Int], override val uid: String)
   extends Transformer with HasInputCol with HasOutputCol with DefaultParamsWritable {
 
-  def this(featureMap: Map[Int, Int]) = this(featureMap, Identifiable.randomUID("VectorFilterZero"))
+  def this(featureMap: Map[Int, Int]) = this(featureMap, Identifiable.randomUID("VectorReIndexNonZero"))
 
-  def this() = this(Map[Int, Int](), Identifiable.randomUID("VectorFilterZero"))
+  def this() = this(Map[Int, Int](), Identifiable.randomUID("VectorReIndexNonZero"))
 
   def this(uid: String) = this(Map[Int, Int](), uid)
 
@@ -52,7 +52,7 @@ class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
     val schema = dataset.schema
     val metadata = dataset.select($(inputCol)).schema.fields.last.metadata
 
-    val nnzIndices = VectorFilterZero.getNonZero(dataset, $(inputCol))
+    val nnzIndices = VectorReIndexNonZero.getNonZero(dataset, $(inputCol))
 
     featureMap ++= nnzIndices.zipWithIndex.toMap
     println(s"feature map:")
@@ -61,7 +61,7 @@ class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
     // Data transformation.
     val filterFunc = udf { r: Row =>
       val vec = r.get(0).asInstanceOf[Vector]
-      VectorFilterZero.filter(featureMap, vec)
+      VectorReIndexNonZero.filter(featureMap, vec)
     }
 
     val args = Array($(inputCol)).map { c =>
@@ -90,9 +90,9 @@ class VectorFilterZero(var featureMap: Map[Int, Int], override val uid: String)
   override def copy(extra: ParamMap): VectorAssembler = defaultCopy(extra)
 }
 
-object VectorFilterZero extends DefaultParamsReadable[VectorFilterZero] {
+object VectorReIndexNonZero extends DefaultParamsReadable[VectorReIndexNonZero] {
 
-  override def load(path: String): VectorFilterZero = super.load(path)
+  override def load(path: String): VectorReIndexNonZero = super.load(path)
 
   private def getAttrs(dataset: Dataset[_], inputCol: String): Array[Attribute] = {
     val schema = dataset.schema
@@ -119,7 +119,7 @@ object VectorFilterZero extends DefaultParamsReadable[VectorFilterZero] {
           Array.tabulate(numAttrs)(i => NumericAttribute.defaultAttr.withName(inputCol + "_" + i))
         }
       case otherType =>
-        throw new SparkException(s"VectorFilterZero does not support the $otherType type")
+        throw new SparkException(s"VectorReIndexNonZero does not support the $otherType type")
     }
   }
 

@@ -83,7 +83,7 @@ class FeatureEngineeringTest extends FunSuite with BeforeAndAfter {
       curField += selectorPrefix
 
       // add filter operator
-      val filter = new VectorFilterZero(featureMap)
+      val filter = new VectorReIndexNonZero(featureMap)
         .setInputCol(curField)
         .setOutputCol(curField + filterPrefix)
       println(s"Filter -> input $curField, output ${curField + filterPrefix}")

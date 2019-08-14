@@ -20,10 +20,10 @@ package com.tencent.angel.spark.automl.feature.examples
 import com.tencent.angel.spark.automl.feature.FeatureUtils
 import com.tencent.angel.spark.automl.feature.cross.FeatureCrossMeta
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.feature.operator.{SelfCartesian, VectorFilterZero}
+import org.apache.spark.ml.feature.operator.{SelfCartesian, VectorReIndexNonZero}
 import org.apache.spark.sql.SparkSession
 
-object FilterZeroExample {
+object VectorReIndexZeroExample {
 
   def main(args: Array[String]): Unit = {
 
@@ -47,7 +47,7 @@ object FilterZeroExample {
       .setInputCol("features")
       .setOutputCol("cartesian_features")
 
-    val filter = new VectorFilterZero(featureMap)
+    val filter = new VectorReIndexNonZero(featureMap)
       .setInputCol("cartesian_features")
       .setOutputCol("filter_features")
 

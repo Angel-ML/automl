@@ -21,7 +21,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.VectorAssembler
-import org.apache.spark.ml.feature.operator.{VarianceSelector, VectorCartesian, VectorFilterZero}
+import org.apache.spark.ml.feature.operator.{VarianceSelector, VectorCartesian, VectorReIndexNonZero}
 import org.apache.spark.ml.{Pipeline, PipelineModel, PipelineStage}
 import org.apache.spark.sql.SparkSession
 
@@ -75,7 +75,7 @@ object FeatureEngineeringExample {
       pipelineStages += selector
       curField += selectorPrefix
       allFields += curField
-      val filter = new VectorFilterZero(featureMap)
+      val filter = new VectorReIndexNonZero(featureMap)
         .setInputCol(curField)
         .setOutputCol(curField + filterPrefix)
       println(s"Filter -> input: $curField, output: ${curField + filterPrefix}")
