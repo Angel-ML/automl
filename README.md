@@ -46,12 +46,12 @@ The tuning component of Angel-AutoML provides easy-to-use interfaces.
 Users can integrate it into their programs with fewer than 10 lines.
 
 - **Define hyper-parameter space.**
-Supported format of discrete hyper-parameter: {v1,v2,v3,v4} or {start:end:step}.
+Supported format of discrete hyper-parameter: {v1,v2,v3,v4} or {start\:end\:step}.
 ```scala
 val param1 = ParamSpace.fromConfigString("param1", "{1.0,2.0,3.0,4.0,5.0}")
 val param2 = ParamSpace.fromConfigString("param2", "{1:10:1}")
 ```
-Supported format of continuous hyper-parameter: [start,end] or [start:end:num_of_elements]
+Supported format of continuous hyper-parameter: [start,end] or [start\:end\:num_of_elements]
 ```scala
 val param1 = ParamSpace.fromConfigString("param1", "[1,10]")
 val param2 = ParamSpace.fromConfigString("param2", "[1:10:10]")
