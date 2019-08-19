@@ -7,7 +7,7 @@
   <groupId>com.tencent.angel</groupId>
   <artifactId>angel-automl</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>Angel-AutoML</name>
   <description>automatic machine learning library with scala and Spark</description>
