@@ -97,7 +97,7 @@ class VectorCartesian(override val uid: String) extends Transformer
       col("*"),
       interactFunc(struct(featureCols: _*)).as(
         $(outputCol),
-        MetadataTransformUtils.vectorCartesianTransform(fields, vectorDims(0)).build()))
+        MetadataTransformUtils.vectorCartesianTransform(fields, vectorDims(1)).build()))
 
   }
 
